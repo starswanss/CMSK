@@ -12,6 +12,9 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, "data");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const HERO_FILE = path.join(DATA_DIR, "hero.json");
+const SETTINGS_FILE = path.join(DATA_DIR, "settings.json");
+
+const DEFAULT_SETTINGS = { brandName: "YUAN SIKHIO Craft", logo: "" };
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -126,6 +129,25 @@ app.delete("/api/hero/:id", async (req, res) => {
     return res.status(404).json({ error: "Slide not found" });
   await writeJson(HERO_FILE, next);
   res.json({ ok: true });
+});
+
+/* ---------- Settings API (brand name + logo) ---------- */
+app.get("/api/settings", async (_req, res) => {
+  const settings = await readJson(SETTINGS_FILE, DEFAULT_SETTINGS);
+  res.json({ ...DEFAULT_SETTINGS, ...settings });
+});
+
+app.put("/api/settings", async (req, res) => {
+  const { brandName, logo } = req.body || {};
+  const current = await readJson(SETTINGS_FILE, DEFAULT_SETTINGS);
+  const next = {
+    ...DEFAULT_SETTINGS,
+    ...current,
+    ...(brandName !== undefined && { brandName: String(brandName).trim() || DEFAULT_SETTINGS.brandName }),
+    ...(logo !== undefined && { logo: String(logo) }),
+  };
+  await writeJson(SETTINGS_FILE, next);
+  res.json(next);
 });
 
 app.listen(PORT, () => {

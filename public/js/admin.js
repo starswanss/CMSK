@@ -277,10 +277,114 @@ heroForm.addEventListener("submit", async (e) => {
   }
 });
 
+/* =====================================================
+   BRAND SETTINGS + LOGO UPLOAD
+===================================================== */
+const MAX_LOGO_BYTES = 1024 * 1024; // 1 MB
+let currentLogo = "";
+
+function applyBrand(settings) {
+  const nameEl = $("#brandName");
+  if (nameEl) nameEl.textContent = settings.brandName;
+  document.title = `ระบบหลังบ้าน — ${settings.brandName}`;
+  const mark = $("#brandLogo");
+  if (!mark) return;
+  if (settings.logo) {
+    mark.classList.add("has-logo");
+    mark.innerHTML = `<img src="${esc(settings.logo)}" alt="${esc(settings.brandName)}" />`;
+  } else {
+    mark.classList.remove("has-logo");
+    mark.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`;
+  }
+}
+
+function renderLogoPreview() {
+  const box = $("#s-logoPreview");
+  if (currentLogo) {
+    box.innerHTML = `<img src="${esc(currentLogo)}" alt="ตัวอย่างโลโก้" />`;
+    $("#s-logoRemove").classList.remove("hide");
+  } else {
+    box.innerHTML = "<span>ยังไม่มีโลโก้</span>";
+    $("#s-logoRemove").classList.add("hide");
+  }
+}
+
+async function loadSettings() {
+  let s = { brandName: "YUAN SIKHIO Craft", logo: "" };
+  try {
+    s = { ...s, ...(await api("/api/settings")) };
+  } catch {
+    /* keep defaults */
+  }
+  $("#s-name").value = s.brandName;
+  currentLogo = s.logo || "";
+  renderLogoPreview();
+  applyBrand(s);
+}
+
+$("#s-logoFile").addEventListener("change", (e) => {
+  $("#err-logo").textContent = "";
+  const file = e.target.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    $("#err-logo").textContent = "กรุณาเลือกไฟล์รูปภาพ";
+    e.target.value = "";
+    return;
+  }
+  if (file.size > MAX_LOGO_BYTES) {
+    $("#err-logo").textContent = "ไฟล์ใหญ่เกินไป (เกิน 1 MB) — กรุณาย่อขนาดก่อน";
+    e.target.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    currentLogo = reader.result;
+    renderLogoPreview();
+  };
+  reader.onerror = () => {
+    $("#err-logo").textContent = "อ่านไฟล์ไม่สำเร็จ";
+  };
+  reader.readAsDataURL(file);
+});
+
+$("#s-logoRemove").addEventListener("click", () => {
+  currentLogo = "";
+  $("#s-logoFile").value = "";
+  renderLogoPreview();
+});
+
+$("#settingsForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("#err-brand").textContent = "";
+  $("#s-name").classList.remove("invalid");
+  const brandName = $("#s-name").value.trim();
+  if (!brandName) {
+    $("#err-brand").textContent = "กรุณากรอกชื่อแบรนด์";
+    $("#s-name").classList.add("invalid");
+    $("#s-name").focus();
+    return;
+  }
+  const btn = $("#s-submit");
+  btn.disabled = true;
+  try {
+    const saved = await api("/api/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ brandName, logo: currentLogo }),
+    });
+    applyBrand(saved);
+    toast("บันทึกการตั้งค่าแบรนด์เรียบร้อยแล้ว");
+  } catch (err) {
+    toast("บันทึกไม่สำเร็จ: " + err.message, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
 /* ---------- init ---------- */
 (async function init() {
   try {
-    await Promise.all([loadProducts(), loadHero()]);
+    await Promise.all([loadProducts(), loadHero(), loadSettings()]);
   } catch (e) {
     toast("โหลดข้อมูลไม่สำเร็จ: " + e.message, "error");
   }

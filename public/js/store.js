@@ -25,6 +25,28 @@ function toast(message, type = "success") {
 }
 
 /* =====================================================
+   BRAND SETTINGS (name + logo)
+===================================================== */
+async function loadSettings() {
+  let s = { brandName: "YUAN SIKHIO Craft", logo: "" };
+  try {
+    s = { ...s, ...(await api("/api/settings")) };
+  } catch {
+    /* keep defaults */
+  }
+  const nameEl = $("#brandName");
+  const footEl = $("#footerBrand");
+  if (nameEl) nameEl.textContent = s.brandName;
+  if (footEl) footEl.textContent = s.brandName;
+  document.title = `${s.brandName} — งานคราฟต์คุณภาพ`;
+  const mark = $("#brandLogo");
+  if (mark && s.logo) {
+    mark.classList.add("has-logo");
+    mark.innerHTML = `<img src="${esc(s.logo)}" alt="${esc(s.brandName)}" />`;
+  }
+}
+
+/* =====================================================
    HERO SLIDER
 ===================================================== */
 let slides = [];
@@ -267,6 +289,6 @@ $("#cartBtn").addEventListener("click", () =>
 
 /* ---------- init ---------- */
 (async function init() {
-  await Promise.all([loadHero(), loadProducts()]);
+  await Promise.all([loadSettings(), loadHero(), loadProducts()]);
   handleRoute();
 })();
