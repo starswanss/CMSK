@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ระบบหลังบ้าน — CMSK Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </span>
+        CMSK Admin
+      </div>
+      <button class="side-link active" data-tab="products">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        จัดการสินค้า
+      </button>
+      <button class="side-link" data-tab="hero">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
+        จัดการ Hero Section
+      </button>
+      <div class="spacer"></div>
+      <div class="side-foot">
+        <a class="side-link" href="/">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          กลับไปหน้าร้าน
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label"><span class="stat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg></span> สินค้าทั้งหมด</div>
+          <div class="stat-value" id="statProducts">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span class="stat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg></span> สไลด์ Hero</div>
+          <div class="stat-value" id="statHero">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label"><span class="stat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span> หมวดหมู่</div>
+          <div class="stat-value" id="statCats">0</div>
+        </div>
+      </div>
+
+      <!-- ===== PRODUCTS TAB ===== -->
+      <section class="tab-panel active" id="tab-products">
+        <h1 class="page-title">จัดการสินค้า</h1>
+        <p class="page-sub">เพิ่มสินค้าใหม่ หรือลบสินค้าที่ไม่ต้องการ — อัปเดตทันทีบนหน้าร้าน</p>
+
+        <div class="panel">
+          <div class="panel-head">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            <h3>เพิ่มสินค้าใหม่</h3>
+          </div>
+          <div class="panel-body">
+            <form id="productForm" novalidate>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="p-name">ชื่อสินค้า <span class="req">*</span></label>
+                  <input class="input" id="p-name" name="name" autocomplete="off" />
+                  <span class="error" id="err-name"></span>
+                </div>
+                <div class="field">
+                  <label for="p-price">ราคา (บาท) <span class="req">*</span></label>
+                  <input class="input" id="p-price" name="price" type="number" min="0" step="1" inputmode="numeric" />
+                  <span class="error" id="err-price"></span>
+                </div>
+                <div class="field">
+                  <label for="p-category">หมวดหมู่</label>
+                  <input class="input" id="p-category" name="category" list="catList" placeholder="เช่น อิเล็กทรอนิกส์" autocomplete="off" />
+                  <datalist id="catList"></datalist>
+                </div>
+                <div class="field">
+                  <label for="p-stock">จำนวนสต็อก</label>
+                  <input class="input" id="p-stock" name="stock" type="number" min="0" step="1" inputmode="numeric" placeholder="เว้นว่าง = ไม่จำกัด" />
+                </div>
+                <div class="field full">
+                  <label for="p-image">ลิงก์รูปภาพ (URL)</label>
+                  <input class="input" id="p-image" name="image" type="url" placeholder="https://..." autocomplete="off" />
+                  <span class="hint">วางลิงก์รูปสินค้า — ดูตัวอย่างด้านล่าง</span>
+                </div>
+                <div class="field full">
+                  <div class="img-preview" id="p-preview">
+                    <span>ตัวอย่างรูปภาพจะแสดงที่นี่</span>
+                  </div>
+                </div>
+                <div class="field full">
+                  <label for="p-description">รายละเอียดสินค้า</label>
+                  <textarea class="textarea" id="p-description" name="description" placeholder="อธิบายคุณสมบัติ จุดเด่นของสินค้า..."></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="p-submit">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  เพิ่มสินค้า
+                </button>
+                <button type="reset" class="btn btn-ghost">ล้างฟอร์ม</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>รายการสินค้า</h3>
+          </div>
+          <div class="list" id="productList"></div>
+        </div>
+      </section>
+
+      <!-- ===== HERO TAB ===== -->
+      <section class="tab-panel" id="tab-hero">
+        <h1 class="page-title">จัดการ Hero Section</h1>
+        <p class="page-sub">เพิ่ม/ลบสไลด์ที่แสดงด้านบนสุดของหน้าร้าน — สไลด์จะหมุนเปลี่ยนอัตโนมัติ</p>
+
+        <div class="panel">
+          <div class="panel-head">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            <h3>เพิ่มสไลด์ใหม่</h3>
+          </div>
+          <div class="panel-body">
+            <form id="heroForm" novalidate>
+              <div class="form-grid">
+                <div class="field full">
+                  <label for="h-title">หัวข้อใหญ่ <span class="req">*</span></label>
+                  <input class="input" id="h-title" name="title" autocomplete="off" />
+                  <span class="error" id="err-title"></span>
+                </div>
+                <div class="field full">
+                  <label for="h-subtitle">คำอธิบายรอง</label>
+                  <textarea class="textarea" id="h-subtitle" name="subtitle" placeholder="ข้อความโปรโมชันหรือคำเชิญชวน..."></textarea>
+                </div>
+                <div class="field">
+                  <label for="h-cta">ข้อความปุ่ม</label>
+                  <input class="input" id="h-cta" name="ctaText" placeholder="ช้อปเลย" autocomplete="off" />
+                </div>
+                <div class="field">
+                  <label for="h-link">ลิงก์ปุ่ม</label>
+                  <input class="input" id="h-link" name="ctaLink" placeholder="#products" autocomplete="off" />
+                </div>
+                <div class="field full">
+                  <label for="h-image">ลิงก์รูปพื้นหลัง (URL)</label>
+                  <input class="input" id="h-image" name="image" type="url" placeholder="https://... (แนะนำแนวนอน 1600px)" autocomplete="off" />
+                </div>
+                <div class="field full">
+                  <div class="img-preview" id="h-preview"><span>ตัวอย่างรูปพื้นหลังจะแสดงที่นี่</span></div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                  เพิ่มสไลด์
+                </button>
+                <button type="reset" class="btn btn-ghost">ล้างฟอร์ม</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>สไลด์ทั้งหมด</h3></div>
+          <div class="list" id="heroList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

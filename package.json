@@ -1,0 +1,14 @@
+{
+  "name": "cmsk-store",
+  "version": "1.0.0",
+  "description": "E-commerce storefront with admin backend (products + hero management)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
